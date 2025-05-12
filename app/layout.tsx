@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { Inter } from "next/font/google"
 import ClientLayout from "./client-layout"
 import { Toaster } from "@/components/ui/toaster"
+import { Suspense } from "react"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -24,7 +25,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light">
           <AuthProvider>
-            <ClientLayout>{children}</ClientLayout>
+               <Suspense>
+                    <ClientLayout>{children}</ClientLayout>
+               </Suspense>
              <Toaster />
           </AuthProvider>
         </ThemeProvider>
