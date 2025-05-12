@@ -135,8 +135,8 @@ function exportToCSV(data: Influencer[], filename: string) {
       email: inf.email,
       status: inf.is_approved ? "active" as const : "inactive" as const,
       dateJoined: inf.created_at,
-      referrals: inf.total_clicks ?? 0,
-      earnings: (inf.total_conversions ?? 0) * 5, // example £10 per conversion
+      referrals: inf.total_conversions ?? 0,
+      earnings: (inf.total_earnings ?? 0), // example £10 per conversion
       socialProfiles: {
         instagram: inf.instagram,
         twitter: inf.twitter,
