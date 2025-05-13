@@ -271,6 +271,9 @@ async function handleSubmitToSupabase(
     legal_declaration: legalDeclaration
   })
 
+  console.log("data" + data)
+  console.log("error" + error)
+
   if (error) {
     toast({ title: "Save failed", description: error.message, variant: "destructive" })
     return null
@@ -639,16 +642,14 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         return
       }
 
-      console.log(user)
-      console.log(insertedWill)
-      console.log(paymentIntent)
-      // await savePaymentRecord({
-      //   userId: user.id,
-      //   willId: insertedWill.id, // get from the response
-      //   stripeSession: paymentIntent.id,
-      //   status: paymentIntent.status,
-      //   amount: paymentIntent.amount / 100, // if in pence
-      // })
+      
+      await savePaymentRecord({
+        userId: user.id,
+        willId: insertedWill.id, // get from the response
+        stripeSession: paymentIntent.id,
+        status: paymentIntent.status,
+        amount: paymentIntent.amount / 100, // if in pence
+      })
 
             // Track referral if exists
       const referralCode = localStorage.getItem("referral_code")
