@@ -111,6 +111,8 @@ export default function ReviewWill() {
     addressLine2: "",
     city: "",
     postcode: "",
+    petCare: "",
+    digitalAssets: ""
   })
   const [isLoading, setIsLoading] = useState(true)
   const searchParams = useSearchParams()
@@ -156,6 +158,8 @@ useEffect(() => {
         funeralWishes: data.funeral_wishes,
         verifyIdentity: data.verify_identity,
         legalDeclaration: data.legal_declaration,
+        petCare: data.pet_care,
+        digitalAssets: data.digital_assets
       }
 
       setFormData(transformed)
@@ -225,6 +229,8 @@ useEffect(() => {
       addressLine2: "Apt 4B",
       city: "London",
       postcode: "SW1A 1AA",
+      petCare: "",
+      digitalAssets: ""
     })
   }
 
@@ -411,6 +417,22 @@ useEffect(() => {
                   icon={<Shield className="h-4 w-4 text-green-600" />}
                 />
               )}
+              {formData.petCare  && (
+                  <ReviewCard
+                    title="Pet Care"
+                    items={[{ label: "Pet Care", value: formData.petCare }]}
+                    onEdit={() => handleEdit("wishes")}
+                  />
+                )}
+
+                {formData.digitalAssets && (
+                  <ReviewCard
+                    title="Digital Assets"
+                    items={[{ label: "Digital Assets", value: formData.digitalAssets }]}
+                    onEdit={() => handleEdit("wishes")}
+                  />
+                )}
+
             </div>
 
             <Alert className="mt-6 border-amber-200 bg-amber-50 border-l-4 border-l-amber-500">
