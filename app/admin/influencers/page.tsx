@@ -273,6 +273,17 @@ const handleViewApplication = (application: Application) => {
       return
     }
 
+    await fetch("/api/send-influencer-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: selectedInfluencer.email,
+        name: selectedInfluencer.name,
+        status: "approved",
+      }),
+    })
+
+
     toast({
       title: "Application approved",
       description: `${selectedInfluencer.name}'s application has been approved.`,
@@ -297,6 +308,17 @@ const handleViewApplication = (application: Application) => {
       return
     }
 
+       await fetch("/api/send-influencer-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: selectedInfluencer.email,
+        name: selectedInfluencer.name,
+        status: "rejected",
+      }),
+    })
+
+
     toast({
       title: "Application rejected",
       description: `${selectedInfluencer.name}'s application has been removed.`,
@@ -318,6 +340,17 @@ const handleViewApplication = (application: Application) => {
       toast({ title: "Failed to delete", description: error.message, variant: "destructive" })
       return
     }
+
+   await fetch("/api/send-influencer-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: selectedInfluencer.email,
+        name: selectedInfluencer.name,
+        status: "rejected",
+      }),
+    })
+
 
     toast({
       title: "Influencer deleted",
