@@ -639,7 +639,11 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         return
       }
 
-
+      console.log(user.id)
+      console.log(insertedWill.id)
+      console.log(paymentIntent.id)
+      console.log(paymentIntent.status)
+      console.log(paymentIntent.amount)
       await savePaymentRecord({
         userId: user.id,
         willId: insertedWill.id, // get from the response
