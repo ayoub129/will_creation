@@ -639,18 +639,16 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         return
       }
 
-      console.log(user.id)
-      console.log(insertedWill.id)
-      console.log(paymentIntent.id)
-      console.log(paymentIntent.status)
-      console.log(paymentIntent.amount)
-      await savePaymentRecord({
-        userId: user.id,
-        willId: insertedWill.id, // get from the response
-        stripeSession: paymentIntent.id,
-        status: paymentIntent.status,
-        amount: paymentIntent.amount / 100, // if in pence
-      })
+      console.log(user)
+      console.log(insertedWill)
+      console.log(paymentIntent)
+      // await savePaymentRecord({
+      //   userId: user.id,
+      //   willId: insertedWill.id, // get from the response
+      //   stripeSession: paymentIntent.id,
+      //   status: paymentIntent.status,
+      //   amount: paymentIntent.amount / 100, // if in pence
+      // })
 
             // Track referral if exists
       const referralCode = localStorage.getItem("referral_code")
