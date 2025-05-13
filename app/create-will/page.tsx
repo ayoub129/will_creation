@@ -97,11 +97,25 @@ export default function CreateWill() {
     const editId = searchParams.get("edit")
     if (editId) {
       const fetchWill = async () => {
+        const sessionRes = await supabase.auth.getUser()
+        const userId = sessionRes.data?.user?.id
+
+        if (!userId) {
+          router.push("/create-will")
+          return
+        }
+
         const { data, error } = await supabase
           .from("wills")
           .select("*")
           .eq("id", editId)
           .single()
+
+        if (data.user_id !== userId) {
+          router.push("/create-will") // or show 403 page
+          return
+        }
+
 
         if (error) {
           console.error("Failed to fetch will for editing:", error.message)

@@ -122,6 +122,14 @@ const [isViewMode, setIsViewMode] = useState(false)
 useEffect(() => {
   const fetchData = async () => {
     if (viewId) {
+      const sessionRes = await supabase.auth.getUser()
+      const userId = sessionRes.data?.user?.id
+
+      if (!userId) {
+        router.push("/create-will/review")
+        return
+      }
+
       // Supabase fetch by will ID
         setIsViewMode(true)
 
@@ -130,6 +138,12 @@ useEffect(() => {
         .select("*")
         .eq("id", viewId)
         .single()
+
+      if (data.user_id !== userId) {
+        router.push("/create-will/review") // or show 403 page
+        return
+      }
+
 
       if (error) {
         console.error("Error fetching will by ID:", error)
