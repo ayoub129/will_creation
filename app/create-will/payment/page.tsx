@@ -97,7 +97,7 @@ export default function Payment() {
                 </div>
               </CardContent>
             </Card>
-            {user && willData && (
+            {/* {user && willData && (
               <div className="mb-6 text-center">
                 <Button
                   variant="outline"
@@ -111,7 +111,7 @@ export default function Payment() {
                   {isSaving ? "Saving..." : "Save to DB Only"}
                 </Button>
               </div>
-            )}
+            )} */}
 
             {isLoading || authLoading ? (
               <div className="flex flex-col items-center justify-center py-12">
