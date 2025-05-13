@@ -132,8 +132,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser({ id, email: refreshedEmail, name: user_metadata?.fullName, role: user_metadata?.role }) // 👈 include role here
 
       toast({ title: "Login successful", description: "Welcome back!" })
-      const redirect = new URLSearchParams(window.location.search).get("redirect") || "/dashboard"
-      router.push(redirect)
+
+      const redirect = new URLSearchParams(window.location.search).get("redirect")
+      if (redirect) {
+        router.push(redirect)
+      } else if (typeof window !== "undefined" && window.location.pathname === "/create-will/payment") {
+        router.refresh() // stay on the same page and just refresh it
+      } else {
+        router.push("/dashboard")
+      }
     } catch (err: any) {
       toast({
         title: "Login failed",
@@ -153,6 +160,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           redirectTo: `${window.location.origin}/dashboard`,
         },
       })
+
+      const redirect = new URLSearchParams(window.location.search).get("redirect")
+      if (redirect) {
+        router.push(redirect)
+      } else if (typeof window !== "undefined" && window.location.pathname === "/create-will/payment") {
+        router.refresh() // stay on the same page and just refresh it
+      } else {
+        router.push("/dashboard")
+      }
+
 
       if (error) {
         toast({ title: "Google login failed", description: error.message, variant: "destructive" })

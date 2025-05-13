@@ -170,7 +170,7 @@ useEffect(() => {
                     </div>
                   </div>
 
-                  {/* <Button
+                  <Button
                     type="button"
                     variant="outline"
                     className="w-full"
@@ -196,7 +196,7 @@ useEffect(() => {
                       />
                     </svg>
                     Google
-                  </Button> */}
+                  </Button>
                 </CardFooter>
               </form>
             </TabsContent>
@@ -254,7 +254,7 @@ useEffect(() => {
                     </div>
                   </div>
 
-                  {/* <Button
+                  <Button
                     type="button"
                     variant="outline"
                     className="w-full"
@@ -280,7 +280,7 @@ useEffect(() => {
                       />
                     </svg>
                     Google
-                  </Button> */}
+                  </Button>
                 </CardFooter>
               </form>
             </TabsContent>
