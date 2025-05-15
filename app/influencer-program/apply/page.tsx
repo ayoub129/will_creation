@@ -33,6 +33,7 @@ export default function InfluencerApplicationPage() {
   const [formData, setFormData] = useState({
     fullName: user?.name || "",
     email: user?.email || "",
+    paypal: "",
     socialProfiles: {
       instagram: "",
       twitter: "",
@@ -83,6 +84,16 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     return
   }
 
+  if (!formData.paypal) {
+  toast({
+    title: "PayPal required",
+    description: "Please enter your PayPal email to receive payments.",
+    variant: "destructive",
+  })
+  return
+}
+
+
   if (!formData.agreeTerms) {
     toast({
       title: "Please agree to the terms",
@@ -108,6 +119,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     const { error } = await supabase.from("influencers").insert({
       email: formData.email, 
       name: formData.fullName, 
+      paypal: formData.paypal,
       referral_code: crypto.randomUUID().split("-")[0], // Generate a short unique code
       instagram: formData.socialProfiles.instagram,
       twitter: formData.socialProfiles.twitter,
@@ -193,6 +205,21 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                         className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
                         placeholder="your@email.com"
                       />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="paypal" className="text-gray-700">
+                        PayPal Email <span className="text-red-500">*</span>
+                      </Label>
+                      <Input
+                        id="paypal"
+                        name="paypal"
+                        type="email"
+                        value={formData.paypal}
+                        onChange={handleChange}
+                        required
+                        className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                        placeholder="you@paypal.com"
+                    />
                     </div>
                   </div>
 

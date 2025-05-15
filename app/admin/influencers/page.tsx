@@ -64,6 +64,8 @@ interface Influencer {
   dateJoined: string
   referrals: number
   earnings: number
+  pending_payment: number
+  paypal: string
   socialProfiles: SocialProfiles
 }
 
@@ -91,6 +93,62 @@ export default function AdminInfluencersPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 10
+const [paymentInfluencers, setPaymentInfluencers] = useState<Influencer[]>([])
+
+
+const loadPaymentData = async () => {
+  const { data, error } = await supabase
+    .from("influencers")
+    .select("*")
+    .gt("pending_payment", 50)
+
+  if (error) {
+    toast({ title: "Error", description: error.message, variant: "destructive" })
+    return
+  }
+
+  const formatted = data.map((inf) => ({
+    id: inf.id.toString(),
+    name: inf.name,
+    email: inf.email,
+    dateJoined: inf.created_at,
+    referrals: inf.total_conversions ?? 0,
+    earnings: inf.total_earnings ?? 0,
+    socialProfiles: {
+      instagram: inf.instagram,
+      twitter: inf.twitter,
+      tiktok: inf.tiktok,
+      youtube: inf.youtube,
+      facebook: inf.facebook,
+      linkedin: inf.linkedin,
+    },
+    pending_payment: inf.pending_payment ?? 0,
+    paypal: inf.paypal,
+    status: inf.is_approved ? "active" as const : "inactive" as const,
+  }))
+
+  setPaymentInfluencers(formatted)
+}
+
+const handleMarkAsPaid = async (influencerId: string, email: string, name: string) => {
+  const { error } = await supabase
+    .from("influencers")
+    .update({ pending_payment: 0 })
+    .eq("id", influencerId)
+
+  if (error) {
+    toast({ title: "Error", description: "Failed to update payment", variant: "destructive" })
+    return
+  }
+
+  toast({ title: "Payment Marked", description: `Marked ${name} as paid.` })
+
+  // Simulated email debug
+  console.log(`[DEBUG] Payment confirmation email for ${name} <${email}>`)
+  
+  // Refresh list
+  loadPaymentData()
+}
 
 function exportToCSV(data: Influencer[], filename: string) {
   const csvHeaders = ["Name", "Email", "Status", "Date Joined", "Referrals", "Earnings"]
@@ -145,6 +203,8 @@ function exportToCSV(data: Influencer[], filename: string) {
         facebook: inf.facebook,
         linkedin: inf.linkedin,
       },
+      pending_payment: inf.pending_payment ?? 0,
+      paypal: inf.paypal,
     }))
 
     setInfluencers(formatted)
@@ -196,6 +256,7 @@ function exportToCSV(data: Influencer[], filename: string) {
       setIsLoading(true)
       loadData()
       loadApplications()
+      loadPaymentData()
       setIsLoading(false)
     }
   }, [user, authLoading, router])
@@ -406,6 +467,7 @@ const handleViewApplication = (application: Application) => {
                   <TabsTrigger value="active">Active</TabsTrigger>
                   <TabsTrigger value="inactive">Inactive</TabsTrigger>
                   <TabsTrigger value="applications">Applications</TabsTrigger>
+                  <TabsTrigger value="payments">Payments</TabsTrigger>
                 </TabsList>
 
                 <div className="mb-6 flex items-center">
@@ -752,6 +814,55 @@ const handleViewApplication = (application: Application) => {
                   </CardFooter>
                 </Card>
               </TabsContent>
+
+          <TabsContent value="payments">
+            <Card className="border-0 shadow-sm">
+              <CardHeader>
+                <CardTitle>Pending Payments</CardTitle>
+                <CardDescription>Mark influencers as paid once their commissions are processed</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>paypal email</TableHead>
+                      <TableHead>Pending (£)</TableHead>
+                      <TableHead></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {paymentInfluencers.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center text-gray-500 py-6">
+                          No influencers pending payment
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      paymentInfluencers.map((inf) => (
+                        <TableRow key={inf.id}>
+                          <TableCell>{inf.name}</TableCell>
+                          <TableCell>{inf.email}</TableCell>
+                          <TableCell>{inf.paypal}</TableCell>
+                          <TableCell>£{inf.pending_payment}</TableCell>
+                          <TableCell className="text-right">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleMarkAsPaid(inf.id, inf.email, inf.name)}
+                            >
+                              Mark as Paid
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
             <div className="flex justify-end mt-4 gap-2">
               <Button onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} disabled={currentPage === 1}>
