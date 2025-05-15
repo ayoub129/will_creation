@@ -680,11 +680,11 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         if (influencer) {
           // 1. Add referral entry
           await supabase.from("referrals").insert({
-            referred_email: user?.email,
+            referrer_id: referralCode,
             referrer_email: influencer.email,
+            will_id: willId!,
             status: "completed",
             amount: 5,
-            commission_paid: false,
             created_at: new Date().toISOString()
           })
 
