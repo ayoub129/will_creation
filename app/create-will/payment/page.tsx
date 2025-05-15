@@ -590,6 +590,12 @@ async function savePaymentRecord({
   status: string
   amount: number
 }) {
+  console.log('we are in payment')
+  console.log(userId)
+  console.log(willId)
+  console.log(stripeSession)
+  console.log(status)
+  console.log(amount)
   const { error } = await supabase.from("payments").insert({
     user_id: userId,
     will_id: willId,
@@ -663,7 +669,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         willId: willId!,
         stripeSession: paymentIntent.id,
         status: paymentIntent.status,
-        amount: paymentIntent.amount / 100, // if in pence
+        amount: paymentIntent.amount / 100, 
       })
 
             // Track referral if exists
