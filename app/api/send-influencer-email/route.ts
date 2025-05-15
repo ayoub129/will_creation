@@ -58,8 +58,6 @@ We appreciate your interest and encourage you to reapply in the future.
       },
     })
 
-    console.log(process.env.EMAIL_PASS)
-
     await transporter.sendMail({
       from: `"My Easy Will" <${process.env.EMAIL_USER}>`,
       to: email,
