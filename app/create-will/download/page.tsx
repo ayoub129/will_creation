@@ -228,8 +228,13 @@ const handleEmailWill = async () => {
                     )}
                   </PDFDownloadLink>
                 )}
+                <Button variant="outline" className="w-full h-14 text-base" onClick={handlePrint}>
+                      <Printer className="mr-2 h-5 w-5" />
+                      Print Will
+                </Button>
 
-                {showEmailForm ? (
+
+                {/* {showEmailForm ? (
                   <div className="w-full space-y-3">
                     <Label htmlFor="email" className="text-base">
                       Email Address
@@ -259,7 +264,7 @@ const handleEmailWill = async () => {
                       Print Will
                     </Button>
                   </div>
-                )}
+                )} */}
 
                 {/* <Button variant="ghost" className="w-full h-12 text-gray-500">
                   <Share2 className="mr-2 h-5 w-5" />
