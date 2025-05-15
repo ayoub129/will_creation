@@ -26,7 +26,6 @@ interface Payment {
   date: string
   amount: number
   method: string
-  status: string
 }
 
 interface MarketingMaterial {
@@ -141,7 +140,6 @@ if (paymentsError) {
       date: p.created_at,
       amount: p.amount,
       method: p.method,
-      status: p.status,
     }))
   )
 }
@@ -426,7 +424,7 @@ const downloadMaterial = (material: MarketingMaterial) => {
                       <TableCell>{payment.id}</TableCell>
                       <TableCell>£{payment.amount}</TableCell>
                       <TableCell>{payment.method}</TableCell>
-                      <TableCell className="capitalize">{payment.status}</TableCell>
+                      <TableCell className="capitalize">Paid</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

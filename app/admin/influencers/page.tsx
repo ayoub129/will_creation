@@ -130,25 +130,41 @@ const loadPaymentData = async () => {
   setPaymentInfluencers(formatted)
 }
 
-const handleMarkAsPaid = async (influencerId: string, email: string, name: string) => {
-  const { error } = await supabase
+const handleMarkAsPaid = async (influencerId: string, email: string, name: string, amount: number) => {
+  // 1. Update influencer's pending_payment to 0
+  const { error: updateError } = await supabase
     .from("influencers")
     .update({ pending_payment: 0 })
     .eq("id", influencerId)
 
-  if (error) {
+  if (updateError) {
     toast({ title: "Error", description: "Failed to update payment", variant: "destructive" })
     return
   }
 
-  toast({ title: "Payment Marked", description: `Marked ${name} as paid.` })
+  // 2. Insert payment record
+  const { error: insertError } = await supabase
+    .from("influencer_payments")
+    .insert({
+      influencer_email: email,
+      amount: amount,
+      method: "paypal",
+    })
 
-  // Simulated email debug
-  console.log(`[DEBUG] Payment confirmation email for ${name} <${email}>`)
-  
-  // Refresh list
+  if (insertError) {
+    toast({ title: "Warning", description: "Marked as paid but failed to log payment", variant: "destructive" })
+    console.error("Failed to insert influencer payment record:", insertError.message)
+    return
+  }
+
+  // 3. Debug log
+  console.log(`[DEBUG] Payment confirmation email for ${name} <${email}> - Amount: £${amount}`)
+
+  // 4. Success toast + refresh
+  toast({ title: "Payment Marked", description: `Marked ${name} as paid.` })
   loadPaymentData()
 }
+
 
 function exportToCSV(data: Influencer[], filename: string) {
   const csvHeaders = ["Name", "Email", "Status", "Date Joined", "Referrals", "Earnings"]
@@ -882,7 +898,7 @@ const handleViewApplication = (application: Application) => {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => handleMarkAsPaid(inf.id, inf.email, inf.name)}
+                              onClick={() => handleMarkAsPaid(inf.id, inf.email, inf.name, inf.pending_payment)}
                             >
                               Mark as Paid
                             </Button>
