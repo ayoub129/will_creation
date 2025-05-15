@@ -1,23 +1,23 @@
-import React from "react"
-import { NextApiRequest, NextApiResponse } from "next"
-import nodemailer from "nodemailer"
+// app/api/send-will-email/route.ts
+import { NextRequest } from "next/server"
 import { renderToBuffer } from "@react-pdf/renderer"
 import { WillDocument } from "@/components/pdf/WillDocument"
+import nodemailer from "nodemailer"
 
-export const config = {
-  runtime: 'nodejs',
-}
+export const runtime = "nodejs"
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") return res.status(405).end()
+export async function POST(req: NextRequest) {
+  const body = await req.json()
+  const { email, willData } = body
 
-  const { email, willData } = req.body
   if (!email || !willData) {
-    return res.status(400).json({ message: "Missing email or will data" })
+    return new Response(JSON.stringify({ message: "Missing email or will data" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    })
   }
 
   try {
-    // ✅ Generate a Node.js-compatible Buffer
     const pdfBuffer = await renderToBuffer(<WillDocument will={willData} />)
 
     const transporter = nodemailer.createTransport({
@@ -41,9 +41,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       ],
     })
 
-    return res.status(200).json({ message: "Email sent" })
+    return new Response(JSON.stringify({ message: "Email sent" }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    })
   } catch (error: any) {
     console.error("Email sending failed:", error)
-    return res.status(500).json({ message: "Internal Server Error", error: error.message })
+    return new Response(JSON.stringify({ message: "Internal Server Error", error: error.message }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    })
   }
 }
