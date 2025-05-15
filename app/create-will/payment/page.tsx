@@ -637,15 +637,30 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         return
       }
 
-      if (!insertedWill) {
-        toast({ title: "Save failed", description: "Could not save the will.", variant: "destructive" })
+    let willId = insertedWill?.id
+
+    if (!willId) {
+      // Try to fetch the latest will for this user
+      const { data: latestWill, error: fetchError } = await supabase
+        .from("wills")
+        .select("id")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single()
+
+      if (fetchError || !latestWill) {
+        toast({ title: "Save failed", description: "Could not find a saved will.", variant: "destructive" })
         return
       }
+
+      willId = latestWill.id
+    }
 
       
       await savePaymentRecord({
         userId: user.id,
-        willId: insertedWill.id, // get from the response
+        willId: willId!,
         stripeSession: paymentIntent.id,
         status: paymentIntent.status,
         amount: paymentIntent.amount / 100, // if in pence
