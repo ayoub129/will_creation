@@ -87,42 +87,67 @@ useEffect(() => {
 
 
 const handleEmailWill = async () => {
-  if (showEmailForm) {
-    if (!emailAddress || !emailAddress.includes("@")) {
-      toast({
-        title: "Invalid Email",
-        description: "Please enter a valid email address.",
-        variant: "destructive",
-      })
-      return
-    }
+  if (!showEmailForm) return setShowEmailForm(true);
 
-    try {
-      const res = await fetch("/api/send-will-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: emailAddress, willData }),
-      })
-
-      if (res.ok) {
-        setIsEmailSent(true)
-        toast({ title: "Success", description: "Will sent to email." })
-        setTimeout(() => {
-          setIsEmailSent(false)
-          setShowEmailForm(false)
-          setEmailAddress("")
-        }, 3000)
-      } else {
-        toast({ title: "Failed", description: "Could not send the email", variant: "destructive" })
-      }
-    } catch (err) {
-      console.error("Email send error:", err)
-      toast({ title: "Error", description: "Something went wrong", variant: "destructive" })
-    }
-  } else {
-    setShowEmailForm(true)
+  if (!emailAddress || !emailAddress.includes("@")) {
+    toast({
+      title: "Invalid Email",
+      description: "Please enter a valid email address.",
+      variant: "destructive",
+    });
+    return;
   }
-}
+
+  try {
+    if (!willData || !user) return;
+
+    // Generate PDF blob
+    const blob = await pdf(<WillDocument will={willData} />).toBlob();
+
+    // Generate filename
+    const fileName = `wills/will-${user.id}-${Date.now()}.pdf`;
+
+    // Upload to Supabase Storage
+    const { error: uploadError } = await supabase.storage
+      .from("public-wills")
+      .upload(fileName, blob, {
+        contentType: "application/pdf",
+        upsert: true,
+      });
+
+    if (uploadError) throw uploadError;
+
+    // Get public URL
+    const { data: urlData } = supabase.storage.from("public-wills").getPublicUrl(fileName);
+    const publicUrl = urlData?.publicUrl;
+
+    // Update will record with pdf_url
+    await supabase
+      .from("wills")
+      .update({ pdf_url: publicUrl })
+      .eq("id", willData.id);
+
+    // Call backend to send email
+    const res = await fetch("/api/send-will-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: emailAddress, pdfUrl: publicUrl }),
+    });
+
+    if (!res.ok) throw new Error("Failed to send email");
+
+    setIsEmailSent(true);
+    toast({ title: "Success", description: "Will sent to email." });
+    setTimeout(() => {
+      setIsEmailSent(false);
+      setShowEmailForm(false);
+      setEmailAddress("");
+    }, 3000);
+  } catch (err) {
+    console.error("Email send error:", err);
+    toast({ title: "Error", description: "Something went wrong", variant: "destructive" });
+  }
+};
 
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
