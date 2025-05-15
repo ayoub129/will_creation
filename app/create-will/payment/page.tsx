@@ -590,16 +590,11 @@ async function savePaymentRecord({
   status: string
   amount: number
 }) {
-  console.log('we are in payment')
-  console.log(userId)
-  console.log(willId)
-  console.log(stripeSession)
-  console.log(status)
-  console.log(amount)
+
   const { error } = await supabase.from("payments").insert({
     user_id: userId,
     will_id: willId,
-    stripe_session: stripeSession,
+    stripe_session_id: stripeSession,
     status,
     amount,
   })

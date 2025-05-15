@@ -236,10 +236,10 @@ const handleEmailWill = async () => {
                   </div>
                 )}
 
-                <Button variant="ghost" className="w-full h-12 text-gray-500">
+                {/* <Button variant="ghost" className="w-full h-12 text-gray-500">
                   <Share2 className="mr-2 h-5 w-5" />
                   Share with Executor
-                </Button>
+                </Button> */}
               </CardFooter>
             </Card>
 
