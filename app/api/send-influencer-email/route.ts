@@ -11,10 +11,14 @@ export async function POST(req: Request) {
   const website = process.env.NEXT_PUBLIC_APP_URL || "https://makewillonline.com"
   const authLink = `${website}/auth?redirect=%2Fdashboard%2Finfluencer`
 
-  const subject =
-    status === "approved"
-      ? "You're Approved as a My Easy Will Influencer! 🎉"
-      : "Your Influencer Application Was Rejected"
+const subject =
+  status === "approved"
+    ? "You're Approved as a My Easy Will Influencer! 🎉"
+    : status === "inactive"
+    ? "Your Influencer Account Has Been Deactivated"
+    : status === "active"
+    ? "Your Influencer Account Has Been Reactivated"
+    : "Your Influencer Application Was Rejected"
 
   const message =
     status === "approved"
@@ -31,7 +35,11 @@ Once logged in, you'll get access to your dashboard, referral link, and earnings
 Welcome aboard!
 
 – The My Easy Will Team`
-      : `Hi ${name},
+      : status === "inactive"
+    ? `Hi ${name},\n\nYour influencer account has been **deactivated**. If this was a mistake or you need clarification, please contact support.\n\n– The My Easy Will Team`
+    : status === "active"
+    ? `Hi ${name},\n\nGood news! Your influencer account has been **reactivated**. You may now resume sharing and earning.\n\n👉 ${authLink}\n\n– The My Easy Will Team`
+: `Hi ${name},
 
 Thank you for applying to become an influencer for My Easy Will.
 

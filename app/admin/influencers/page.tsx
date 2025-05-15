@@ -422,17 +422,49 @@ const handleViewApplication = (application: Application) => {
     setIsDeleteDialogOpen(false)
   }
 
-  const toggleInfluencerStatus = (influencer: Influencer) => {
-    // In a real implementation, this would call an API to toggle the status
+  const toggleInfluencerStatus = async (influencer: Influencer) => {
     const newStatus = influencer.status === "active" ? "inactive" : "active"
 
-    setInfluencers((prev) => prev.map((inf) => (inf.id === influencer.id ? { ...inf, status: newStatus } : inf)))
+    // Update local state immediately
+    setInfluencers((prev) =>
+      prev.map((inf) => (inf.id === influencer.id ? { ...inf, status: newStatus } : inf))
+    )
 
     toast({
       title: `Influencer ${newStatus}`,
       description: `${influencer.name} is now ${newStatus}.`,
     })
+
+    // Send status update email
+    try {
+      await fetch("/api/send-influencer-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: influencer.email,
+          name: influencer.name,
+          status: newStatus, // 👈 This will be "active" or "inactive"
+        }),
+      })
+    } catch (err) {
+      console.error("Error sending status change email:", err)
+    }
+
+    // Optional: update in Supabase (if you're persisting the change)
+    const { error } = await supabase
+      .from("influencers")
+      .update({ is_approved: newStatus === "active" })
+      .eq("id", influencer.id)
+
+    if (error) {
+      toast({
+        title: "Status update failed",
+        description: error.message,
+        variant: "destructive",
+      })
+    }
   }
+
   
   if (authLoading || isLoading) {
     return (
