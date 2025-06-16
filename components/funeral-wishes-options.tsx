@@ -96,7 +96,7 @@ export function FuneralWishesOptions({ value, onChange, onSkip }: FuneralWishesO
               key={option}
               type="button"
               variant={selectedOptions.includes(option) ? "default" : "outline"}
-              className={`h-auto py-3 px-4 text-left justify-start ${
+              className={`h-auto py-3 px-4 text-left justify-start whitespace-normal break-words ${
                 selectedOptions.includes(option)
                   ? "bg-[#007BFF] text-white hover:bg-[#0056b3]"
                   : "border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-[#007BFF] hover:border-[#007BFF]"
