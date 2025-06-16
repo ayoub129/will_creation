@@ -19,12 +19,13 @@ export async function POST(request: Request) {
       metadata: {
         product: "My Easy Will",
       },
-      payment_method_types: ['card'], // Specify only card payments
+      payment_method_types: ["card", "link"],
     })
 
     return NextResponse.json({ clientSecret: paymentIntent.client_secret })
   } catch (error) {
-    console.error("Error creating payment intent:", error)
+    console.error("Error creating payment intent:", error instanceof Error ? error.message : error)
+    console.error("Stripe error:", JSON.stringify(error, null, 2))
     return NextResponse.json({ error: "Failed to create payment intent" }, { status: 500 })
   }
 }
