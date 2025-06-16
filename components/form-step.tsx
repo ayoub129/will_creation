@@ -1072,7 +1072,7 @@ export function FormStep({ step, formData, onChange, onDateOfBirthChange, onSkip
                     onChange={handleChange}
                     required={field.required}
                     placeholder={field.placeholder || ""}
-                    className="min-h-[120px] text-base"
+                    className="min-h-[100px] overflow-auto whitespace-pre-wrap break-words"
                   />
                 </>
               )
