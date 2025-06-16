@@ -328,7 +328,6 @@ async function handleSubmitToSupabase(
     funeralWishes,
     petCare,
     digitalAssets,
-    verifyIdentity,
     legalDeclaration
   } = willData
 
@@ -362,7 +361,7 @@ async function handleSubmitToSupabase(
     funeral_wishes: funeralWishes,
     pet_care: petCare,
     digital_assets: digitalAssets,
-    verify_identity: verifyIdentity,
+    verify_identity: true,
     legal_declaration: legalDeclaration
   })
 

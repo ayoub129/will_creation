@@ -21,7 +21,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Checkbox } from "@/components/ui/checkbox"
 import { ButtonSelect } from "./button-select"
 import { FuneralWishesOptions } from "./funeral-wishes-options"
-import { IdentityVerificationFlow } from "./identity-verification-flow"
+// import { IdentityVerificationFlow } from "./identity-verification-flow"
 import { Shield, CheckCircle } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -248,11 +248,7 @@ export function FormStep({ step, formData, onChange, onDateOfBirthChange, onSkip
   }
 
   const handleCheckboxChange = (name, checked) => {
-    if (name === "verifyIdentity" && checked) {
-      setShowVerificationFlow(true)
-    } else {
-      onChange(name, checked)
-    }
+    onChange(name, checked)
   }
 
   const handleChildChange = (field, value) => {
@@ -284,15 +280,7 @@ export function FormStep({ step, formData, onChange, onDateOfBirthChange, onSkip
     }))
   }
 
-  const handleVerificationComplete = (verified) => {
-    setShowVerificationFlow(false)
-    onChange("verifyIdentity", verified)
-  }
 
-  const handleVerificationSkip = () => {
-    setShowVerificationFlow(false)
-    onSkipStep()
-  }
 
   const addChild = () => {
     if (childInput.name) {
@@ -710,9 +698,9 @@ export function FormStep({ step, formData, onChange, onDateOfBirthChange, onSkip
   }
 
   // If showing verification flow, render that instead of the normal form
-  if (showVerificationFlow) {
-    return <IdentityVerificationFlow onComplete={handleVerificationComplete} onSkip={handleVerificationSkip} />
-  }
+  // if (showVerificationFlow) {
+  //   return <IdentityVerificationFlow onComplete={handleVerificationComplete} onSkip={handleVerificationSkip} />
+  // }
 
   // Helper function to check if a field has a skip option
   const hasSkipOption = (field) => {
@@ -1134,28 +1122,6 @@ export function FormStep({ step, formData, onChange, onDateOfBirthChange, onSkip
 
             {field.type === "checkbox" && field.name !== "legalDeclaration" && (
               <div className="flex flex-col space-y-4">
-                {/* Add skip button for identity verification */}
-                {hasSkipOption(field) && field.name === "verifyIdentity" && (
-                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-2">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-medium text-base">Skip verification?</h4>
-                        <p className="text-sm text-gray-600">
-                          Identity verification is optional but adds extra security to your will
-                        </p>
-                      </div>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={onSkipStep}
-                        className="border-[#007BFF] text-[#007BFF] hover:bg-blue-50"
-                        data-testid="skip-verification-button"
-                      >
-                        Skip this step
-                      </Button>
-                    </div>
-                  </div>
-                )}
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id={field.name}
@@ -1226,75 +1192,6 @@ export function FormStep({ step, formData, onChange, onDateOfBirthChange, onSkip
                   <div className="bg-green-50 border border-green-100 rounded-lg p-3 flex items-center gap-2">
                     <CheckCircle className="h-5 w-5 text-green-600" />
                     <p className="text-green-700">You have confirmed you meet all legal requirements</p>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {field.type === "verification-button" && (
-              <div className="space-y-6">
-                {/* Add skip button for identity verification */}
-                {hasSkipOption(field) && (
-                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-medium text-base">Skip verification?</h4>
-                        <p className="text-sm text-gray-600">
-                          Identity verification is optional but adds extra security to your will
-                        </p>
-                      </div>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={onSkipStep}
-                        className="border-[#007BFF] text-[#007BFF] hover:bg-blue-50"
-                        data-testid="skip-verification-button"
-                      >
-                        Skip this step
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                <div className="bg-blue-50 border border-blue-100 rounded-lg p-5 mb-4">
-                  <div className="flex items-start gap-3">
-                    <Shield className="h-6 w-6 text-blue-600 mt-1" />
-                    <div>
-                      <h3 className="font-medium text-blue-800 text-lg">Why Verify Your Identity?</h3>
-                      <p className="mt-2 text-blue-700">
-                        Identity verification adds an extra layer of security to your will, helping to:
-                      </p>
-                      <ul className="mt-3 space-y-2 text-blue-700">
-                        <li className="flex items-start gap-2">
-                          <CheckCircle className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
-                          <span>Prevent fraud and unauthorized changes</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckCircle className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
-                          <span>Ensure your will is legally recognized as yours</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <CheckCircle className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
-                          <span>Provide peace of mind for you and your loved ones</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                <Button
-                  type="button"
-                  className="w-full h-14 brand-button text-base flex items-center justify-center gap-2"
-                  onClick={() => setShowVerificationFlow(true)}
-                >
-                  <Shield className="h-5 w-5" />
-                  <span>Verify My Identity</span>
-                </Button>
-
-                {formData.verifyIdentity && (
-                  <div className="bg-green-50 border border-green-100 rounded-lg p-3 flex items-center gap-2">
-                    <CheckCircle className="h-5 w-5 text-green-600" />
-                    <p className="text-green-700">Your identity has been verified successfully</p>
                   </div>
                 )}
               </div>

@@ -170,7 +170,7 @@ useEffect(() => {
         specificGifts: data.specific_gifts || [],
         residualEstate: data.residual_estate,
         funeralWishes: data.funeral_wishes,
-        verifyIdentity: data.verify_identity,
+        verifyIdentity: true,
         legalDeclaration: data.legal_declaration,
         petCare: data.pet_care,
         digitalAssets: data.digital_assets
@@ -423,14 +423,14 @@ useEffect(() => {
                 />
               )}
 
-              {formData.verifyIdentity && (
+              {/* {formData.verifyIdentity && (
                 <ReviewCard
                   title="Identity Verification"
                   items={[{ label: "Status", value: "Will be verified after payment" }]}
                   onEdit={() => handleEdit("identity")}
                   icon={<Shield className="h-4 w-4 text-green-600" />}
                 />
-              )}
+              )} */}
               {formData.petCare  && (
                   <ReviewCard
                     title="Pet Care"

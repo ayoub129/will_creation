@@ -157,12 +157,20 @@ export default function CreateWill() {
       try {
         const parsedData = JSON.parse(savedData)
         setFormData(parsedData.formData)
-        setCurrentStep(parsedData.step)
         setCurrentSection(parsedData.section || "personal")
+
+        // Adjust currentStep if it's out of bounds for the legal section immediately
+        let initialStep = parsedData.step;
+        if (parsedData.section === "legal" && parsedData.step > 0) {
+          initialStep = 0; // Reset to the first (and only) step in the legal section
+        }
+        setCurrentStep(initialStep);
+
         // Also restore the acknowledged complex estate flag if it exists
         if (parsedData.hasAcknowledgedComplexEstate !== undefined) {
           setHasAcknowledgedComplexEstate(parsedData.hasAcknowledgedComplexEstate)
         }
+
       } catch (e) {
         console.error("Error loading saved progress", e)
       }
@@ -687,7 +695,9 @@ const sections: Record<SectionKey, Section> = {    personal: {
 
   // Get current section and step data
   const currentSectionData = sections[currentSection]
-  const currentStepData = currentSectionData.steps[currentStep]
+
+  // Ensure currentStepData is always a valid object, or null
+  const currentStepData = currentSectionData?.steps?.[currentStep] || null;
 
   // Calculate total steps across all sections
   const totalSteps = Object.values(sections).reduce((total, section) => total + section.steps.length, 0)
@@ -1102,7 +1112,7 @@ const handleInputChange = (name: string, value: any) => {
         title: "Step skipped",
         description: "No digital assets instructions have been specified.",
       })
-    } 
+    }
 
     // Move to next step
     handleNext()
@@ -1178,16 +1188,23 @@ const handleInputChange = (name: string, value: any) => {
                 }}
               />
             ) : (
-              <Card className="rounded-lg border bg-white p-6 shadow-sm brand-card">
-                {/* Skip children step button - now handled in the FormStep component */}
-                <FormStep
-                  step={currentStepData}
-                  formData={formData}
-                  onChange={handleInputChange}
-                  onDateOfBirthChange={handleDateOfBirthChange}
-                  onSkipStep={handleSkipStep}
-                />
-              </Card>
+              currentStepData ? (
+                <Card className="rounded-lg border bg-white p-6 shadow-sm brand-card">
+                  {/* Skip children step button - now handled in the FormStep component */}
+                  <FormStep
+                    step={currentStepData}
+                    formData={formData}
+                    onChange={handleInputChange}
+                    onDateOfBirthChange={handleDateOfBirthChange}
+                    onSkipStep={handleSkipStep}
+                  />
+                </Card>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-12">
+                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#007BFF] border-t-transparent"></div>
+                  <p className="mt-4 text-gray-600">Loading step data...</p>
+                </div>
+              )
             )}
 
             {/* Step indicator */}
