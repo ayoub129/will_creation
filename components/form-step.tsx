@@ -1588,7 +1588,7 @@ export function FormStep({ step, formData, onChange, onDateOfBirthChange, onSkip
                         <Sparkles className="h-4 w-4 text-amber-500" />
                         <span>Quick Distribution Presets</span>
                       </h4>
-                      <div className="grid grid-cols-3 gap-2">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                         <Button
                           type="button"
                           variant="outline"

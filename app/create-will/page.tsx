@@ -85,7 +85,6 @@ export default function CreateWill() {
     funeralWishes: "",
     petCare: "",
     digitalAssets: "",
-    verifyIdentity: false,
     legalDeclaration: false,
   })
 
@@ -147,7 +146,6 @@ export default function CreateWill() {
           funeralWishes: data.funeral_wishes,
           petCare: data.pet_care,
           digitalAssets: data.digital_assets,
-          verifyIdentity: data.verify_identity,
           legalDeclaration: data.legal_declaration,
         }
 
@@ -661,31 +659,6 @@ const sections: Record<SectionKey, Section> = {    personal: {
     legal: {
       title: "Legal & Verification",
       steps: [
-        {
-          title: "Identity Verification",
-          description: "Secure your will with quick identity verification",
-          fields: [
-            {
-              name: "verifyIdentity",
-              label: "Identity Verification",
-              type: "verification-button",
-              required: false,
-              skipOption: {
-                show: true,
-                text: "Skip verification",
-              },
-            },
-          ],
-          helpContent: {
-            title: "Why Verify Your Identity?",
-            content: [
-              "Identity verification helps prevent fraud and ensures your will is truly yours.",
-              "It takes just 2-3 minutes and adds significant legal protection to your will.",
-              "We use bank-level security to protect your information throughout the process.",
-            ],
-            note: "While optional, verification is strongly recommended for your peace of mind.",
-          },
-        },
         {
           title: "Legal Declaration",
           description: "Confirm your will meets UK legal requirements",
