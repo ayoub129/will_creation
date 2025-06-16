@@ -249,16 +249,21 @@ export default function Payment() {
                 </CardContent>
               </Card>
             ) : clientSecret ? (
-              <Elements stripe={stripePromise} options={{ clientSecret }}>
-                <CheckoutForm 
-                  router={router} 
-                  willData={willData} 
-                  isAuthenticated={!!user}
-                  onPaymentSuccess={(intentId) => {
-                    setPaymentSuccess(true)
-                    setPaymentIntentId(intentId)
-                  }}
-                />
+              <Elements stripe={stripePromise} options={{ clientSecret, 
+                appearance: { theme: 'stripe' },
+                loader: 'auto', // Automatically shows a loading spinner
+               }}>
+                {willData && (
+                  <CheckoutForm 
+                    router={router} 
+                    willData={willData} 
+                    isAuthenticated={!!user}
+                    onPaymentSuccess={(intentId) => {
+                      setPaymentSuccess(true)
+                      setPaymentIntentId(intentId)
+                    }}
+                  />
+                )}
               </Elements>
             ) : (
               <Card className="border-0 shadow-sm">
