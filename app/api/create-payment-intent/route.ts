@@ -19,7 +19,6 @@ export async function POST(request: Request) {
       metadata: {
         product: "My Easy Will",
       },
-      payment_method_types: ["card", "link"],
     })
 
     return NextResponse.json({ clientSecret: paymentIntent.client_secret })
