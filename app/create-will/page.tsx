@@ -1102,19 +1102,7 @@ const handleInputChange = (name: string, value: any) => {
         title: "Step skipped",
         description: "No digital assets instructions have been specified.",
       })
-    } else if (currentSection === "legal" && currentStepData.title === "Identity Verification") {
-      // Set verification to false
-      setFormData((prev) => ({
-        ...prev,
-        verifyIdentity: false,
-      }))
-
-      toast({
-        title: "Identity verification skipped",
-        description: "You can verify your identity later if needed.",
-        variant: "default",
-      })
-    }
+    } 
 
     // Move to next step
     handleNext()
